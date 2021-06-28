@@ -31,42 +31,42 @@ const App = (props) => {
     getAllCharacter();
     getCharacter();
     return () => { isMountedRef.current = false; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   function getAllCharacter() {
-    var allCharacter;
-    characters.length = 0;
-    fetch(baseUrl + 'people/', {
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      }
+    console.log(characters.length)
+    if (!characters.length) {
+      var allCharacter;
 
-    })
-      .then(response => response.json())
-      .then(data => data.results)
-      .then(async (results) => {
-        allCharacter = await results;
-      }).then(() => {
-
-        for (let i = 0; i < 10; i++) {
-          let element = allCharacter[i];
-          // element = JSON.stringify(element)
-          characters.push(element)
+      fetch(baseUrl + 'people/', {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
         }
 
-      }).then(console.log('characters obj : ', characters));
+      })
+        .then(response => response.json())
+        .then(data => data.results)
+        .then(async (results) => {
+          allCharacter = await results;
+        }).then(() => {
+          setCharacters(prevCharacters => ([...prevCharacters, ...allCharacter]))
+        })
 
+    }
     return allCharacter;
 
 
   }
 
   function getCharacter() {
-    // selectCharacter.length = 0;
-    let url = baseUrl + 'people/1/';
-    getCharacterByUrl(url);
-    console.log('selectCharacter ', selectCharacter);
+    if (!selectCharacter.length) {
+      let url = baseUrl + 'people/1/';
+      getCharacterByUrl(url);
+      console.log('selectCharacter ', selectCharacter);
+    }
+
     return selectCharacter;
   }
 
@@ -85,23 +85,18 @@ const App = (props) => {
         singleCharacter = await data;
       })
       .then(() => {
-        selectCharacter.name = singleCharacter.name;
-        selectCharacter.birth_year = singleCharacter.birth_year;
-        selectCharacter.eye_color = singleCharacter.eye_color;
-        selectCharacter.hair_color = singleCharacter.hair_color;
-        selectCharacter.skin_color = singleCharacter.skin_color;
-        selectCharacter.gender = singleCharacter.gender;
-        selectCharacter.height = singleCharacter.height;
-        selectCharacter.mass = singleCharacter.mass;
-        // console.log('selectCharacter obj : ', selectCharacter);
-        //
-        films.length = 0;
-        species.length = 0;
-        vehicles.length = 0;
-        starships.length = 0;
+        setSelectedCharacter(() => (singleCharacter))
 
-        let FilmsData = singleCharacter.films;
-        FilmsData.map(url => getCharacterFilmByUrl(url))
+        setFilms(() => ([]))
+        setSpecies(() => ([]))
+        setVehicles(() => ([]))
+        setStarships(() => ([]))
+
+        // get films, species, starships, vehicles
+        singleCharacter.films.map(url => getCharacterFilmByUrl(url))
+        singleCharacter.species.map(url => getCharacterSpeiceByUrl(url))
+        singleCharacter.starships.map(url => getCharacterStarshipsByUrl(url))
+        singleCharacter.vehicles.map(url => getCharacterVehiclesByUrl(url))
 
       });
 
@@ -109,7 +104,6 @@ const App = (props) => {
 
   function getCharacterFilmByUrl(url) {
     var singleFilm = {};
-    if (typeof url === 'undefined') url = baseUrl + 'films/1/';
     fetch(url, {
       headers: {
         'Content-Type': 'application/json',
@@ -119,18 +113,19 @@ const App = (props) => {
       .then(response => response.json())
       .then(async (data) => {
         singleFilm = await data;
-        films.push(singleFilm)
+
+        setFilms(prevFilms => ([...prevFilms, singleFilm]))
+
+
       })
       .then(() => {
-        singleFilm.species.map(url => getCharacterSpeiceByUrl(url))
-        singleFilm.starships.map(url => getCharacterStarshipsByUrl(url))
-        singleFilm.vehicles.map(url => getCharacterVehiclesByUrl(url))
+
       });
   }
 
   function getCharacterSpeiceByUrl(url) {
     var singleSpeice = {};
-    if (typeof url === 'undefined') url = baseUrl + 'species/1/';
+
     fetch(url, {
       headers: {
         'Content-Type': 'application/json',
@@ -140,17 +135,15 @@ const App = (props) => {
       .then(response => response.json())
       .then(async (data) => {
         singleSpeice = await data;
-        species.push(singleSpeice)
+        setSpecies(prevSpecies => ([...prevSpecies, singleSpeice]))
+
       })
-      .then(() => {
-        // console.log('singleSpeice ', singleSpeice);
-        // console.log('species obj : ', species);
-      });
+
   }
 
   function getCharacterStarshipsByUrl(url) {
     var singleStarship = {};
-    if (typeof url === 'undefined') url = baseUrl + 'starships/2/';
+
     fetch(url, {
       headers: {
         'Content-Type': 'application/json',
@@ -160,12 +153,10 @@ const App = (props) => {
       .then(response => response.json())
       .then(async (data) => {
         singleStarship = await data;
-        starships.push(singleStarship)
+        setStarships(prevStarships => ([...prevStarships, singleStarship]))
+
       })
-      .then(() => {
-        // console.log('singleStarship ', singleStarship);
-        // console.log('starships obj : ', starships);
-      });
+
   }
 
   function getCharacterVehiclesByUrl(url) {
@@ -180,13 +171,9 @@ const App = (props) => {
       .then(response => response.json())
       .then(async (data) => {
         singleVehicle = await data;
-        vehicles.push(singleVehicle)
-
+        setVehicles(prevVehicles => ([...prevVehicles, singleVehicle]))
       })
-      .then(() => {
-        // console.log('singleVehicle ', singleVehicle);
-        // console.log('vehicles obj : ', vehicles);
-      });
+
   }
 
   return (
