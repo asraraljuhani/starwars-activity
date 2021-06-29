@@ -14,10 +14,8 @@ import InfoBox from './components/InfoBox';
 
 const App = (props) => {
 
-
   const isMountedRef = useRef(true);
   const baseUrl = 'https://swapi.dev/api/';
-
 
   const [selectCharacter, setSelectedCharacter] = useState({})
   const [characters, setCharacters] = useState([])
@@ -35,45 +33,32 @@ const App = (props) => {
   }, [])
 
   function getAllCharacter() {
-    console.log(characters.length)
     if (!characters.length) {
-      var allCharacter;
-
+      let allCharacter;
       fetch(baseUrl + 'people/', {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         }
-
       })
         .then(response => response.json())
         .then(data => data.results)
         .then(async (results) => {
           allCharacter = await results;
-        }).then(() => {
           setCharacters(prevCharacters => ([...prevCharacters, ...allCharacter]))
         })
-
     }
-    return allCharacter;
-
-
   }
 
   function getCharacter() {
     if (!selectCharacter.length) {
       let url = baseUrl + 'people/1/';
       getCharacterByUrl(url);
-      console.log('selectCharacter ', selectCharacter);
     }
-
-    return selectCharacter;
   }
 
   function getCharacterByUrl(url) {
-
-    console.log('url ', url)
-    var singleCharacter = {};
+    let character = {};
     fetch(url, {
       headers: {
         'Content-Type': 'application/json',
@@ -82,28 +67,28 @@ const App = (props) => {
     })
       .then(response => response.json())
       .then(async (data) => {
-        singleCharacter = await data;
+        character = await data;
       })
       .then(() => {
-        setSelectedCharacter(() => (singleCharacter))
+        setSelectedCharacter(() => (character))
 
+        // clear films, species, starships, vehicles
         setFilms(() => ([]))
         setSpecies(() => ([]))
         setVehicles(() => ([]))
         setStarships(() => ([]))
 
         // get films, species, starships, vehicles
-        singleCharacter.films.map(url => getCharacterFilmByUrl(url))
-        singleCharacter.species.map(url => getCharacterSpeiceByUrl(url))
-        singleCharacter.starships.map(url => getCharacterStarshipsByUrl(url))
-        singleCharacter.vehicles.map(url => getCharacterVehiclesByUrl(url))
-
+        character.films.map(url => getCharacterFilmByUrl(url))
+        character.species.map(url => getCharacterSpeiceByUrl(url))
+        character.starships.map(url => getCharacterStarshipsByUrl(url))
+        character.vehicles.map(url => getCharacterVehiclesByUrl(url))
       });
 
   }
 
   function getCharacterFilmByUrl(url) {
-    var singleFilm = {};
+    let film = {};
     fetch(url, {
       headers: {
         'Content-Type': 'application/json',
@@ -112,20 +97,14 @@ const App = (props) => {
     })
       .then(response => response.json())
       .then(async (data) => {
-        singleFilm = await data;
-
-        setFilms(prevFilms => ([...prevFilms, singleFilm]))
-
-
+        film = await data;
+        setFilms(prevFilms => ([...prevFilms, film]))
       })
-      .then(() => {
 
-      });
   }
 
   function getCharacterSpeiceByUrl(url) {
-    var singleSpeice = {};
-
+    let speice = {};
     fetch(url, {
       headers: {
         'Content-Type': 'application/json',
@@ -134,16 +113,14 @@ const App = (props) => {
     })
       .then(response => response.json())
       .then(async (data) => {
-        singleSpeice = await data;
-        setSpecies(prevSpecies => ([...prevSpecies, singleSpeice]))
-
+        speice = await data;
+        setSpecies(prevSpecies => ([...prevSpecies, speice]))
       })
 
   }
 
   function getCharacterStarshipsByUrl(url) {
-    var singleStarship = {};
-
+    let starship = {};
     fetch(url, {
       headers: {
         'Content-Type': 'application/json',
@@ -152,16 +129,14 @@ const App = (props) => {
     })
       .then(response => response.json())
       .then(async (data) => {
-        singleStarship = await data;
-        setStarships(prevStarships => ([...prevStarships, singleStarship]))
-
+        starship = await data;
+        setStarships(prevStarships => ([...prevStarships, starship]))
       })
 
   }
 
   function getCharacterVehiclesByUrl(url) {
-    var singleVehicle = {};
-    if (typeof url === 'undefined') url = baseUrl + 'vehicles/4/';
+    let vehicle = {};
     fetch(url, {
       headers: {
         'Content-Type': 'application/json',
@@ -170,8 +145,8 @@ const App = (props) => {
     })
       .then(response => response.json())
       .then(async (data) => {
-        singleVehicle = await data;
-        setVehicles(prevVehicles => ([...prevVehicles, singleVehicle]))
+        vehicle = await data;
+        setVehicles(prevVehicles => ([...prevVehicles, vehicle]))
       })
 
   }
