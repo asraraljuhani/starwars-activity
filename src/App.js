@@ -34,7 +34,6 @@ const App = (props) => {
 
   function getAllCharacter() {
     if (!characters.length) {
-      let allCharacter;
       fetch(baseUrl + 'people/', {
         headers: {
           'Content-Type': 'application/json',
@@ -44,7 +43,7 @@ const App = (props) => {
         .then(response => response.json())
         .then(data => data.results)
         .then(async (results) => {
-          allCharacter = await results;
+          let allCharacter = await results;
           setCharacters(prevCharacters => ([...prevCharacters, ...allCharacter]))
         })
     }
@@ -58,7 +57,6 @@ const App = (props) => {
   }
 
   function getCharacterByUrl(url) {
-    let character = {};
     fetch(url, {
       headers: {
         'Content-Type': 'application/json',
@@ -67,9 +65,7 @@ const App = (props) => {
     })
       .then(response => response.json())
       .then(async (data) => {
-        character = await data;
-      })
-      .then(() => {
+        let character = await data;
         setSelectedCharacter(() => (character))
 
         // clear films, species, starships, vehicles
@@ -88,7 +84,6 @@ const App = (props) => {
   }
 
   function getCharacterFilmByUrl(url) {
-    let film = {};
     fetch(url, {
       headers: {
         'Content-Type': 'application/json',
@@ -97,14 +92,13 @@ const App = (props) => {
     })
       .then(response => response.json())
       .then(async (data) => {
-        film = await data;
+        let film = await data;
         setFilms(prevFilms => ([...prevFilms, film]))
       })
 
   }
 
   function getCharacterSpeiceByUrl(url) {
-    let speice = {};
     fetch(url, {
       headers: {
         'Content-Type': 'application/json',
@@ -113,14 +107,13 @@ const App = (props) => {
     })
       .then(response => response.json())
       .then(async (data) => {
-        speice = await data;
+        let speice = await data;
         setSpecies(prevSpecies => ([...prevSpecies, speice]))
       })
 
   }
 
   function getCharacterStarshipsByUrl(url) {
-    let starship = {};
     fetch(url, {
       headers: {
         'Content-Type': 'application/json',
@@ -129,14 +122,13 @@ const App = (props) => {
     })
       .then(response => response.json())
       .then(async (data) => {
-        starship = await data;
+        let starship = await data;
         setStarships(prevStarships => ([...prevStarships, starship]))
       })
 
   }
 
   function getCharacterVehiclesByUrl(url) {
-    let vehicle = {};
     fetch(url, {
       headers: {
         'Content-Type': 'application/json',
@@ -145,7 +137,7 @@ const App = (props) => {
     })
       .then(response => response.json())
       .then(async (data) => {
-        vehicle = await data;
+        let vehicle = await data;
         setVehicles(prevVehicles => ([...prevVehicles, vehicle]))
       })
 
